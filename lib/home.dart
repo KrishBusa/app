@@ -7,11 +7,10 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> {
   late BannerAd _bannerAd;
   bool _isBannerAdLoaded = false;
   InterstitialAd? _interstitialAd;
-  late AnimationController _animationController;
   RewardedAd? _rewardedAd;
   int userPoints = 0; // Points counter
 
@@ -21,7 +20,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     _loadBannerAd();
     _loadInterstitialAd();
     _loadRewardedAd();
-
   }
 
   void _loadBannerAd() {
@@ -61,20 +59,15 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }
 
   void _showInterstitialAd() {
-    _animationController.forward().then((_) {
-      _animationController.reverse().then((_) {
-        if (_interstitialAd != null) {
-          _interstitialAd!.show();
-          _interstitialAd = null;
-          _loadInterstitialAd();
-        } else {
-          print('Interstitial Ad Not Ready');
-          _loadInterstitialAd();
-        }
-      });
-    });
+    if (_interstitialAd != null) {
+      _interstitialAd!.show();
+      _interstitialAd = null;
+      _loadInterstitialAd();
+    } else {
+      print('Interstitial Ad Not Ready');
+      _loadInterstitialAd();
+    }
   }
-
 
   void _loadRewardedAd() {
     RewardedAd.load(
@@ -91,7 +84,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       ),
     );
   }
-
 
   void _showRewardedAd() {
     if (_rewardedAd != null) {
@@ -111,7 +103,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   void dispose() {
     _bannerAd.dispose();
-    _animationController.dispose();
     super.dispose();
   }
 
@@ -135,9 +126,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             Spacer(),
             Text(
               "Your Points: $userPoints",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+              style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
             ),
             SizedBox(height: 20),
+
+            // Button for Watching Interstitial Ad
             Center(
               child: Shimmer.fromColors(
                 baseColor: Color.fromARGB(255, 220, 106, 108),
@@ -150,16 +146,19 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     width: 216,
                     decoration: BoxDecoration(
                       color: Colors.transparent,
-                      border: Border.all(color: Color.fromARGB(255, 220, 106, 108),),
+                      border: Border.all(color: Color.fromARGB(255, 220, 106, 108)),
                       borderRadius: BorderRadius.circular(100),
                     ),
                     child: Center(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.play_circle_outline_outlined, size: 37, color: Colors.white),
+                          Icon(Icons.play_circle_outline_outlined,
+                              size: 37, color: Colors.white),
                           SizedBox(width: 10),
-                          Text("Watch Ad", style: TextStyle(fontSize: 24, color: Colors.white)),
+                          Text("Watch Ad",
+                              style:
+                              TextStyle(fontSize: 24, color: Colors.white)),
                         ],
                       ),
                     ),
@@ -167,41 +166,40 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 ),
               ),
             ),
+
             SizedBox(height: 20),
+
+            // Button for Watching Rewarded Ad
             Shimmer.fromColors(
               baseColor: Color.fromARGB(255, 220, 106, 108),
               highlightColor: Colors.white,
               period: Duration(seconds: 2),
               child: GestureDetector(
-                 onTap: _showRewardedAd,
+                onTap: _showRewardedAd,
                 child: Container(
                   height: 57.73,
                   width: 350,
                   decoration: BoxDecoration(
                     color: Colors.transparent,
-                    border: Border.all(color: Color.fromARGB(255, 220, 106, 108),),
+                    border: Border.all(color: Color.fromARGB(255, 220, 106, 108)),
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: Center(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.play_circle_outline_outlined, size: 37, color: Colors.white),
+                        Icon(Icons.play_circle_outline_outlined,
+                            size: 37, color: Colors.white),
                         SizedBox(width: 10),
-                        Text("Watch Ad & Earn Points", style: TextStyle(fontSize: 24, color: Colors.white)),
+                        Text("Watch Ad & Earn Points",
+                            style: TextStyle(fontSize: 24, color: Colors.white)),
                       ],
                     ),
                   ),
                 ),
               ),
             ),
-            // SizedBox(height: 20),
-            // ElevatedButton(
-            //     onPressed: (){
-            //       Navigator.push(context, MaterialPageRoute(builder: (_)=>TicTacToeScreen()));
-            //     },
-            //     child: Text("New Page")
-            // ),
+
             Spacer(),
 
             if (_isBannerAdLoaded)
